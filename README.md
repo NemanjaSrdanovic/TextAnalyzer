@@ -1,0 +1,2 @@
+# TextAnalyzer
+Dedalus demo project
