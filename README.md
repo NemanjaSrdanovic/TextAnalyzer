@@ -1,5 +1,5 @@
 # TextAnalyzer
-## Dedalus demo project
+## Demo project
 
 Implement an Angular application that supports following requirements:<br/>
 •	a user can enter a text and start the analysis with the press of a button <br/>
