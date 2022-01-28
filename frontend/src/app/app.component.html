@@ -1,0 +1,102 @@
+<div class="overflow-auto" >
+<div class="container">
+
+  <h1>Text Analyzer</h1>
+  <p>The program for calculating how many times letter in given sentence appears. It gives numbers either for vowels or
+    for consonants based on program input.</p>
+
+  <form [formGroup]="analyzerForm" style="margin-bottom: 50px;" (ngSubmit)="getResults()" novalidate>
+   
+
+    <div class="form-group">
+      <label for="exampleFormControlTextarea1">Sentence</label>
+      <textarea [class.is-invalid]="formControlSequence?.invalid && formControlSequence?.touched"
+        formControlName="formControlSequence" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+      <small [class.d-none]="formControlSequence?.valid || formControlSequence?.untouched" class="text-danger">Sequence
+        is required</small>
+    </div>
+
+
+    <div class="form-group" style="margin-top: 20px;">
+      <label>Application behavior</label>
+      <div class="form-check">
+        <input formControlName="formControlBahaviour" name="formControlBahaviour" class="form-check-input" type="radio"
+          value="offline">
+        <label class="form-check-label">Offline: The application uses its own implementation of the "Text Analyzer" to
+          analyze the input.</label>
+      </div>
+      <div class="form-check">
+        <input formControlName="formControlBahaviour" name="formControlBahaviour" class="form-check-input" type="radio"
+          value="online">
+        <label class="form-check-label">Online: The application uses the REST API of the server to analyze the user
+          input.</label>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <div class="input-group" style="margin-top: 20px;">
+        <div class="select" style="margin-right: 10px;">
+          <select (blur)="validateSound(formControlSound?.value)" (change)="validateSound(formControlSound?.value)"
+            [class.is-invalid]="soundHasError && formControlSound?.touched" formControlName="formControlSound"
+            class="form-select btn-primary">
+            <option value="default">Select Sound</option>
+            <option *ngFor="let sound of sounds">{{sound}}</option>
+          </select>
+        </div>
+
+        <div
+          [disableTooltip]="formControlBahaviour?.dirty && !soundHasError && formControlSequence?.value?.length>0 ? true:false"
+          ngbTooltip="Please fill out all fields." placement="top">
+          <button [disabled]="formControlBahaviour?.pristine || soundHasError || formControlSequence?.value?.length<1"
+            class="btn btn-primary" type="submit">Get Result</button>
+        </div>
+
+      </div>
+      <small [class.d-none]="!soundHasError || formControlSound?.untouched" class="text-danger">Please chose a
+        sound</small>
+
+      <br>
+      <div class="alert alert-danger" *ngIf="errorMsg">
+        {{errorMsg}}
+      </div>
+
+    </div>
+  </form>
+
+    <h3 [class.d-none]="result.size<1">Result</h3>
+    <div class="accordion" id="accordionExample">
+      <div *ngFor="let key of resultKeys.reverse()" class="accordion-item">
+        <h2 class="accordion-header" [id]="'headingOne'+key">
+          <button class="accordion-button" type="button" data-toggle="collapse" [attr.data-target]="'#collapse'+key"
+            aria-expanded="false" aria-controls="'collapse'+key" >
+            {{resultSound.get(key)}} | {{resultBahaviour.get(key)}} | {{resultSentence.get(key).substring(0,20)}}...   
+          </button>
+        </h2>
+        <div [id]="'collapse'+key" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingOne'+key">
+          <b>Sentence:</b><br>
+          <i>{{resultSentence.get(key)}}</i><br>
+          <br><b>{{resultSound.get(key)}}</b>
+          <div *ngFor="let value of getResultText(key)">
+            {{value}}
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>
+</div>
+
+
+
+<style>
+
+  .container {
+    position: absolute;
+    top: 10%;
+    left: 35%;
+    margin-left: -100px;
+    width: 800px;
+
+  }
+</style>
