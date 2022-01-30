@@ -1,5 +1,9 @@
-FROM openjdk:11
-ADD ./api.jar api.jar
-EXPOSE 8001
-ENTRYPOINT ["java","-jar", "api.jar"]
+#java 11
+FROM adoptopenjdk/openjdk11:ubi
+
+WORKDIR /usr/app
+
+COPY ./api.jar /usr/app/
+
+ENTRYPOINT ["java","-jar", "-Dserver.port=8000","api.jar"]
 

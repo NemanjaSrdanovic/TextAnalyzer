@@ -8,15 +8,18 @@
   <form [formGroup]="analyzerForm" style="margin-bottom: 50px;" (ngSubmit)="getResults()" novalidate>
    
 
+  <!-- Text input area that when touched and invalid (empty) implies to the user that this field is 
+    required by surrounding the area red and showing a error message.-->
+
     <div class="form-group">
-      <label for="exampleFormControlTextarea1">Sentence</label>
+      <label for="formControlTextarea">Sentence</label>
       <textarea [class.is-invalid]="formControlSequence?.invalid && formControlSequence?.touched"
-        formControlName="formControlSequence" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+        formControlName="formControlSequence" class="form-control" id="formControlTextarea" rows="3"></textarea>
       <small [class.d-none]="formControlSequence?.valid || formControlSequence?.untouched" class="text-danger">Sequence
         is required</small>
     </div>
 
-
+  <!-- Radio buttons giving the user options to chose between the online and offline application mode-->
     <div class="form-group" style="margin-top: 20px;">
       <label>Application behavior</label>
       <div class="form-check">
@@ -33,7 +36,9 @@
       </div>
     </div>
 
-
+  <!-- Dropdown that allows the user to select between multiple options which are defined in the sounds array. 
+    The validity of the user input is checked by the validateSound() method. If the value isn't valid and the component has been touched
+    it will be implied to the user that this field is necessary by surrounding the area red and showing a error message.  -->
     <div class="form-group">
       <div class="input-group" style="margin-top: 20px;">
         <div class="select" style="margin-right: 10px;">
@@ -64,16 +69,22 @@
     </div>
   </form>
 
+
+    <!-- Resault area that displays the resaults for the analyzer form inputs. Each result is shown in a separate accordion that contains the sentence
+       for which the resault has been required and the vowels/consonants in that sentence depending on the user input. The latest result will always be
+      shown as the first accordion and all accordions that were not opened are marked blue. To assemble a accordion item a key from the result map is used
+    to get data from different objects where needed data is stored. -->
+
     <h3 [class.d-none]="result.size<1">Result</h3>
-    <div class="accordion" id="accordionExample">
-      <div *ngFor="let key of resultKeys.reverse()" class="accordion-item">
-        <h2 class="accordion-header" [id]="'headingOne'+key">
+    <div class="accordion" id="accordionParent">
+      <div *ngFor="let key of resultKeys" class="accordion-item">
+        <h2 class="accordion-header" [id]="'heading'+key">
           <button class="accordion-button" type="button" data-toggle="collapse" [attr.data-target]="'#collapse'+key"
             aria-expanded="false" aria-controls="'collapse'+key" >
             {{resultSound.get(key)}} | {{resultBahaviour.get(key)}} | {{resultSentence.get(key).substring(0,20)}}...   
           </button>
         </h2>
-        <div [id]="'collapse'+key" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingOne'+key">
+        <div [id]="'collapse'+key" class="accordion-collapse collapse" [attr.aria-labelledby]="'heading'+key">
           <b>Sentence:</b><br>
           <i>{{resultSentence.get(key)}}</i><br>
           <br><b>{{resultSound.get(key)}}</b>

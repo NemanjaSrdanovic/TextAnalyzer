@@ -47,11 +47,11 @@ public class Endpoints {
 	 */
 	@CrossOrigin
 	@RequestMapping(value = "/getVowels/sentence={inputSentence}")
-	public ResponseEntity<HashMap<Character, Integer>> getVowels(@PathVariable String inputSentence) {
+	public ResponseEntity getVowels(@PathVariable String inputSentence) {
 
 		if (inputSentence == null) {
 
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
 
 		} else {
 			return new ResponseEntity<HashMap<Character, Integer>>(analyzerService.getLetters(true, inputSentence),
@@ -74,11 +74,11 @@ public class Endpoints {
 	 */
 	@CrossOrigin
 	@RequestMapping(value = "/getConsonants/sentence={inputSentence}")
-	public ResponseEntity<HashMap<Character, Integer>> getConsonants(@PathVariable String inputSentence) {
+	public ResponseEntity getConsonants(@PathVariable String inputSentence) {
 
 		if (inputSentence == null) {
 
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("BAD REQUEST", HttpStatus.BAD_REQUEST);
 
 		} else {
 

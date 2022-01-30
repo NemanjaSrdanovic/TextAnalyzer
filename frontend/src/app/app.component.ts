@@ -35,7 +35,11 @@ export class AppComponent {
 
 
 /**
- * 
+ * Method called when the user fills out the form and presses the submit button. 
+ * Based on the form input the input text is analyzed localy or a request send to the api
+ * to analyze the input text. The form inputs and analysis result are linked together with the 
+ * same key and are stored in different maps to be used. After the data has been saved the form
+ * is reset to allow further input. 
  */
   getResults() {
 
@@ -67,6 +71,9 @@ export class AppComponent {
   }
 
 /**
+ * Method called from the getResults() method when the form input "offline" has been selected.
+ * Based on the returnVowels argument in analyzes the input sentence and returns the amount of 
+ * vowels or consonants that exsist in the input sentence.
  * 
  * @param returnVowels 
  * @param inputSentence 
@@ -96,9 +103,12 @@ export class AppComponent {
 
     returnVowels ? this.result.set(this.result.size, vowelsMap) : this.result.set(this.result.size, consonantsMap);
     this.resultKeys = Array.from(this.result.keys());
+    this.resultKeys.reverse();
   }
 
 /**
+ * Method which receives the response from the api and saves the data in a local variable from which
+ * the saved result is extracted and presented to the user.
  * 
  * @param response 
  */
@@ -116,9 +126,14 @@ export class AppComponent {
 
     this.result.set(this.result.size, responseMap);
     this.resultKeys = Array.from(this.result.keys()); 
+    this.resultKeys.reverse();
   }
 
+
   /**
+   * The method receives a key as argument and based on that key extracts data that was returned by the 
+   * api or calculated localy. This data is consequently transformed and put in a iterable that can be 
+   * iterated by the html component to be displayed to the user.
    * 
    * @param key 
    * @returns 
@@ -141,16 +156,9 @@ export class AppComponent {
   
 
   /**
-   * 
-   * @param map 
-   * @returns 
-   */
-  getMapKeys(map: Map<Number, Map<String, Number>>) {
-
-    return map.keys();
-  }
-
-  /**
+   * Validates the value of the select component from the form input group. This method is needed because
+   * simple template driven security methods weren't enought to validate the state if multiple changes of the 
+   * value were made.
    * 
    * @param value 
    */
@@ -166,14 +174,24 @@ export class AppComponent {
 
   }
 
+
+  /**
+   * Returns the formControl that contains data inputed in the sentence text area.
+   */
   get formControlSequence() {
     return this.analyzerForm.get('formControlSequence');
   }
 
+  /**
+   * Returns the formControl that contains data inputed from the radio buttons that represent the application behavior.
+   */
   get formControlBahaviour() {
     return this.analyzerForm.get('formControlBahaviour');
   }
 
+  /**
+   * Return the formControl that contains data for the select component.
+   */
   get formControlSound() {
     return this.analyzerForm.get('formControlSound');
   }
