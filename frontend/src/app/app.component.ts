@@ -47,9 +47,7 @@ export class AppComponent {
     var callApi = this.formControlBahaviour?.value == 'online' ? true : false;
     this.errorMsg = "";
 
-    this.resultSentence.set(this.result.size, this.formControlSequence?.value);
-    this.resultBahaviour.set(this.result.size,this.formControlBahaviour?.value);
-    this.resultSound.set(this.result.size, this.formControlSound?.value);
+    this.saveCurrentFormInputs();
 
 
     if (callApi) {
@@ -65,9 +63,8 @@ export class AppComponent {
       this.getLocalResult(returnVowels, this.formControlSequence?.value);
     }
 
-    this.formControlSequence?.reset();
-    this.formControlBahaviour?.reset();
-    this.formControlSound?.setValue("default");
+
+    this.resetForm();
   }
 
 /**
@@ -133,27 +130,54 @@ export class AppComponent {
   /**
    * The method receives a key as argument and based on that key extracts data that was returned by the 
    * api or calculated localy. This data is consequently transformed and put in a iterable that can be 
-   * iterated by the html component to be displayed to the user.
+   * iterated by the html component to be displayed to the user. Because the HashMap in the api is ordering
+   * elements different than the Map object localy the objects can't be displayed as they are but the order has to
+   * be set by the order of the sounds. In terms of performance, this leads to a greater effort, but has to be accepted
+   * if the online and offline mode should display the result in the same form.
    * 
    * @param key 
    * @returns 
    */
-  getResultText(key: any) {
+   getResultText(key: any) {
 
     var resultTextArray = new Array<String>();
 
     var resultMap = this.result.get(key);
+    var displayOrder = this.resultSound.get(key) == 'Vowels' ? this.vowels : this.consonants;
 
-    resultMap.forEach((value: any, key: any) => {
+    for(let sound of displayOrder){
 
-
-      resultTextArray.push(key + " : " + value);
-    });
+      if(resultMap.has(sound)){
+        resultTextArray.push(sound+ " : " + resultMap.get(sound))
+      }
+    }
 
     return resultTextArray;
   }
 
-  
+  /**
+ * Saves arguments for submited request to be fetched for result display.
+ */
+   saveCurrentFormInputs(){
+
+    this.resultSentence.set(this.result.size, this.formControlSequence?.value);
+    this.resultBahaviour.set(this.result.size,this.formControlBahaviour?.value);
+    this.resultSound.set(this.result.size, this.formControlSound?.value);
+
+  }
+
+  /**
+   * Resets analyzer form to original state so that new request can be made.
+   */
+  resetForm(){
+
+    this.formControlSequence?.reset();
+    this.formControlBahaviour?.reset();
+    this.formControlSound?.setValue("default");
+    this.soundHasError = true;
+    this.formControlSound?.markAsUntouched();
+
+  }
 
   /**
    * Validates the value of the select component from the form input group. This method is needed because
